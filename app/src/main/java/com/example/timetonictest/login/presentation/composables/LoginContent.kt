@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.timetonictest.login.components.DefaultTextField
+import com.example.timetonictest.login.presentation.components.DefaultTextField
 import com.example.timetonictest.R
 import com.example.timetonictest.navigation.screen.Graph
 
