@@ -2,13 +2,15 @@ package com.example.timetonictest.login.dataAccess
 
 import com.example.timetonictest.login.domain.model.AppKey
 import com.example.timetonictest.login.domain.model.OAuthKey
-import com.example.timetonictest.login.domain.model.SessKey
+import com.example.timetonictest.login.domain.model.SessionKey
+import com.example.timetonictest.login.local.LocalDataSource
 import com.example.timetonictest.login.remote.LoginMapper
 import com.example.timetonictest.login.remote.LoginRemoteDataSource
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
     private val loginRemoteDataSource: LoginRemoteDataSource,
+    private val localDataSource: LocalDataSource,
     private val loginMapper: LoginMapper,
 ) {
 
@@ -30,17 +32,19 @@ class LoginRepository @Inject constructor(
         }
     }
 
-    suspend fun createSessKey(
+    suspend fun createSessionKey(
         oAuthKey: String,
-    ): Result<SessKey> {
+    ): Result<SessionKey> {
         val result = loginRemoteDataSource.createSessKey(oAuthKey)
         return when (result.isSuccessful) {
-            true -> Result.success(loginMapper.transformCreateSessKeyToSessKey(result.body()!!))
+            true -> Result.success(loginMapper.transformCreateSessionKeyToSessionKey(result.body()!!))
             false -> throw Exception(result.errorBody().toString())
         }
     }
 
-    suspend fun saveSessionKey(sessionKey: String) {
-
+    fun saveSessionKey(sessionKey: String) {
+        localDataSource.saveSessionKey(sessionKey)
     }
+
+    fun getSessionKey() = localDataSource.getSessionKey()
 }

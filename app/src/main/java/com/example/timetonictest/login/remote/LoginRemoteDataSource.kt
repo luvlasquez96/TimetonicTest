@@ -1,10 +1,13 @@
 package com.example.timetonictest.login.remote
 
+import android.content.Context
 import com.example.timetonictest.login.dataAccess.LoginService
-import com.example.timetonictest.login.domain.model.AppKey
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class LoginRemoteDataSource @Inject constructor(private val loginService: LoginService) {
+class LoginRemoteDataSource @Inject constructor(
+    private val loginService: LoginService,
+) {
 
     suspend fun createAppKey() = loginService.createAppKey()
 
@@ -13,6 +16,6 @@ class LoginRemoteDataSource @Inject constructor(private val loginService: LoginS
     ) = loginService.createOAuthKey(login = login, password = password, appkey = appKey)
 
     suspend fun createSessKey(
-        oAuthKey: String
+        oAuthKey: String,
     ) = loginService.createSessKey(oAuthKey = oAuthKey)
 }
