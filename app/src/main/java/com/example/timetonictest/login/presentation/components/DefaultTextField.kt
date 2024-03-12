@@ -1,4 +1,4 @@
-package com.example.timetonictest.login.components
+package com.example.timetonictest.login.presentation.components
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
