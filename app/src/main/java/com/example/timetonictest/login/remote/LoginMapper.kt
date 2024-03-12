@@ -2,10 +2,10 @@ package com.example.timetonictest.login.remote
 
 import com.example.timetonictest.login.domain.model.AppKey
 import com.example.timetonictest.login.domain.model.OAuthKey
-import com.example.timetonictest.login.domain.model.SessKey
+import com.example.timetonictest.login.domain.model.SessionKey
 import com.example.timetonictest.login.remote.model.CreateAppKey
 import com.example.timetonictest.login.remote.model.CreateOAuthKey
-import com.example.timetonictest.login.remote.model.CreateSessKey
+import com.example.timetonictest.login.remote.model.CreateSessionKey
 import javax.inject.Inject
 
 class LoginMapper @Inject constructor() {
@@ -27,14 +27,14 @@ class LoginMapper @Inject constructor() {
             req = createOAuthKey.req,
             status = createOAuthKey.status
         )
-    fun transformCreateSessKeyToSessKey(createSessKey: CreateSessKey): SessKey =
-        SessKey(
-            appName = createSessKey.appName,
-            createdVNB = createSessKey.createdVNB,
-            id = createSessKey.id,
-            req = createSessKey.req,
-            sesskey = createSessKey.sesskey,
-            status = createSessKey.status
+    fun transformCreateSessionKeyToSessionKey(createSessionKey: CreateSessionKey): SessionKey =
+        SessionKey(
+            appName = createSessionKey.appName,
+            createdVNB = createSessionKey.createdVNB,
+            id = createSessionKey.id,
+            req = createSessionKey.req,
+            sesskey = createSessionKey.sesskey,
+            status = createSessionKey.status
         )
 
 }

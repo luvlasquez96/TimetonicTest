@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.timetonictest.login.dataAccess.LoginRepository
 import com.example.timetonictest.login.domain.model.AppKey
 import com.example.timetonictest.login.domain.model.OAuthKey
-import com.example.timetonictest.login.domain.model.SessKey
+import com.example.timetonictest.login.domain.model.SessionKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.BufferOverflow
@@ -32,8 +32,8 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
         viewModelScope.launch {
             createAppKey().onSuccess {appKey ->
                 createOAuthKey(login, password, appKey.appkey).onSuccess {oAuthKey ->
-                    createSessKey(oAuthKey.oauthkey).onSuccess {sessKey->
-                        loginRepository.saveSessionKey(sessKey.sesskey)
+                    createSessionKey(oAuthKey.oauthkey).onSuccess { sessionKey->
+                        loginRepository.saveSessionKey(sessionKey.sesskey)
                         _viewState.value = ViewState.Loaded
                     }.onFailure {
                         _viewState.value = ViewState.Error(it.message.toString())
@@ -55,8 +55,8 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
         return loginRepository.createOAuthKey(login, password, appkey)
     }
 
-    private suspend fun createSessKey(oAuthUser: String): Result<SessKey> {
-        return loginRepository.createSessKey(oAuthUser)
+    private suspend fun createSessionKey(oAuthUser: String): Result<SessionKey> {
+        return loginRepository.createSessionKey(oAuthUser)
     }
 
 

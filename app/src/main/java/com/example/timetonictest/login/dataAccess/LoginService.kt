@@ -2,7 +2,7 @@ package com.example.timetonictest.login.dataAccess
 
 import com.example.timetonictest.login.remote.model.CreateAppKey
 import com.example.timetonictest.login.remote.model.CreateOAuthKey
-import com.example.timetonictest.login.remote.model.CreateSessKey
+import com.example.timetonictest.login.remote.model.CreateSessionKey
 import com.example.timetonictest.network.di.BASE_URL
 import retrofit2.Response
 import retrofit2.http.POST
@@ -30,9 +30,7 @@ interface LoginService {
         @Query("o_u") oAuthUser: String = OAUTH_USER,
         @Query("oauthkey") oAuthKey: String,
         @Query("restrictions") restrictions: String = "",
-    ): Response<CreateSessKey>
-
-
+    ): Response<CreateSessionKey>
 }
 
 const val APP_KEY = "createAppKey"
