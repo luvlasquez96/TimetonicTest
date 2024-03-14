@@ -2,12 +2,13 @@ package com.example.timetonictest.login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.timetonictest.login.dataAccess.LoginRepository
+import com.example.timetonictest.login.data.dataAccess.LoginRepository
 import com.example.timetonictest.login.domain.model.AppKey
 import com.example.timetonictest.login.domain.model.OAuthKey
 import com.example.timetonictest.login.domain.model.SessionKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,17 +29,20 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
     )
     val viewEvent: Flow<ViewEvent> = _viewEvent
 
-    suspend fun loginUser(login: String, password: String) {
+    fun loginUser(login: String, password: String) {
+        val createAppKey = viewModelScope.async {
+            createAppKey().getOrThrow()
+        }
+        val createOAuthKey = viewModelScope.async {
+            createOAuthKey(login, password, createAppKey.await().appkey).getOrThrow()
+        }
         viewModelScope.launch {
-            createAppKey().onSuccess {appKey ->
-                createOAuthKey(login, password, appKey.appkey).onSuccess {oAuthKey ->
-                    createSessionKey(oAuthKey.oauthkey).onSuccess { sessionKey->
-                        loginRepository.saveSessionKey(sessionKey.sesskey)
-                        _viewState.value = ViewState.Loaded
-                    }.onFailure {
-                        _viewState.value = ViewState.Error(it.message.toString())
-                    }
-                }
+            val oAuthKey = createOAuthKey.await()
+            createSessionKey(oAuthKey.oauthkey, oAuthKey.oauthUser).onSuccess {
+                loginRepository.saveSessionKey(it.sesskey)
+                _viewState.value = ViewState.Loaded
+            }.onFailure {
+                _viewState.value = ViewState.Error(it.message.toString())
             }
         }
     }
@@ -55,8 +59,8 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
         return loginRepository.createOAuthKey(login, password, appkey)
     }
 
-    private suspend fun createSessionKey(oAuthUser: String): Result<SessionKey> {
-        return loginRepository.createSessionKey(oAuthUser)
+    private suspend fun createSessionKey(oAuthKey: String, oAuthUser: String): Result<SessionKey> {
+        return loginRepository.createSessionKey(oAuthKey, oAuthUser)
     }
 
 

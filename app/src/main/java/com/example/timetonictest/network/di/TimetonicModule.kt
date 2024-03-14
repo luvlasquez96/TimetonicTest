@@ -1,6 +1,6 @@
 package com.example.timetonictest.network.di
 
-import com.example.timetonictest.login.dataAccess.LoginService
+import com.example.timetonictest.login.data.dataAccess.LoginService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
