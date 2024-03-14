@@ -1,6 +1,6 @@
-package com.example.timetonictest.login.remote.model
+package com.example.timetonictest.login.data.remote.model
 
-data class CreateAppKey(
+data class CreateAppKeyResponse(
     val appkey: String,
     val createdVNB: String,
     val id: String,

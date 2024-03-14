@@ -1,4 +1,4 @@
-package com.example.timetonictest.remote.model.book
+package com.example.timetonictest.bookList.remote.model.book
 
 data class OwnerPrefs(
     val acceptExternalMsg: Boolean,

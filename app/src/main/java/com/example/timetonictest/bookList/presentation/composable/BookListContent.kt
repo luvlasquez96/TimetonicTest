@@ -11,11 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.timetonictest.remote.model.book.Book
+import com.example.timetonictest.bookList.remote.model.book.BookResponse
 
 @Composable
 fun BookListContent(navController: NavHostController) {
-    val bookList = remember { mutableStateOf(listOf<Book>()) }
+    val bookList = remember { mutableStateOf(listOf<BookResponse>()) }
     Column {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

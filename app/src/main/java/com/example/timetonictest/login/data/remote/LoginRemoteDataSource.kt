@@ -1,8 +1,6 @@
-package com.example.timetonictest.login.remote
+package com.example.timetonictest.login.data.remote
 
-import android.content.Context
-import com.example.timetonictest.login.dataAccess.LoginService
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.example.timetonictest.login.data.dataAccess.LoginService
 import javax.inject.Inject
 
 class LoginRemoteDataSource @Inject constructor(
@@ -17,5 +15,6 @@ class LoginRemoteDataSource @Inject constructor(
 
     suspend fun createSessKey(
         oAuthKey: String,
-    ) = loginService.createSessKey(oAuthKey = oAuthKey)
+        oAuthUser: String,
+    ) = loginService.createSessKey(oAuthKey = oAuthKey, oAuthUser = oAuthUser)
 }

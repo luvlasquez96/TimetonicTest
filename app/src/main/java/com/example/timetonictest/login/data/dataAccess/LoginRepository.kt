@@ -1,11 +1,11 @@
-package com.example.timetonictest.login.dataAccess
+package com.example.timetonictest.login.data.dataAccess
 
+import com.example.timetonictest.login.data.local.LocalDataSource
+import com.example.timetonictest.login.data.remote.LoginMapper
+import com.example.timetonictest.login.data.remote.LoginRemoteDataSource
 import com.example.timetonictest.login.domain.model.AppKey
 import com.example.timetonictest.login.domain.model.OAuthKey
 import com.example.timetonictest.login.domain.model.SessionKey
-import com.example.timetonictest.login.local.LocalDataSource
-import com.example.timetonictest.login.remote.LoginMapper
-import com.example.timetonictest.login.remote.LoginRemoteDataSource
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
@@ -16,7 +16,7 @@ class LoginRepository @Inject constructor(
 
     suspend fun createAppKey(): Result<AppKey> {
         val result = loginRemoteDataSource.createAppKey()
-        return when (result.isSuccessful) {
+        return when (result.body()!!.status == "ok") {
             true -> Result.success(loginMapper.transformCreateAppKeyToAppKey(result.body()!!))
             false -> throw Exception(result.errorBody().toString())
         }
@@ -26,7 +26,7 @@ class LoginRepository @Inject constructor(
         login: String, password: String, appKey: String,
     ): Result<OAuthKey> {
         val result = loginRemoteDataSource.createOAuthKey(login, password, appKey)
-        return when (result.isSuccessful) {
+        return when (result.body()!!.status == "ok") {
             true -> Result.success(loginMapper.transformCreateOAuthKeyToOAuthKey(result.body()!!))
             false -> throw Exception(result.errorBody().toString())
         }
@@ -34,9 +34,10 @@ class LoginRepository @Inject constructor(
 
     suspend fun createSessionKey(
         oAuthKey: String,
+        oAuthUser: String,
     ): Result<SessionKey> {
-        val result = loginRemoteDataSource.createSessKey(oAuthKey)
-        return when (result.isSuccessful) {
+        val result = loginRemoteDataSource.createSessKey(oAuthKey, oAuthUser)
+        return when (result.body()!!.status == "ok") {
             true -> Result.success(loginMapper.transformCreateSessionKeyToSessionKey(result.body()!!))
             false -> throw Exception(result.errorBody().toString())
         }
@@ -46,5 +47,5 @@ class LoginRepository @Inject constructor(
         localDataSource.saveSessionKey(sessionKey)
     }
 
-    fun getSessionKey() = localDataSource.getSessionKey()
+    fun getSessionKey(): String = localDataSource.getSessionKey()
 }

@@ -1,4 +1,7 @@
-package com.example.timetonictest.remote.model.book
+package com.example.timetonictest.bookList.domain
+
+import com.example.timetonictest.bookList.remote.model.book.OwnerPrefs
+import com.example.timetonictest.bookList.remote.model.book.UserPrefs
 
 data class Book(
     val accepted: Boolean,
@@ -13,16 +16,13 @@ data class Book(
     val del: Boolean,
     val description: Any,
     val favorite: Boolean,
-    val fpForm: FpForm,
     val hideBookMembers: String,
     val hideMessage: String,
     val invited: Boolean,
     val isDownloadable: Boolean,
     val langs: Any,
     val lastMedia: Int,
-    val lastMsg: LastMsg,
     val lastMsgRead: Int,
-    val members: List<Member>,
     val nbMembers: Int,
     val nbMsgs: Int,
     val nbNotRead: Int,
