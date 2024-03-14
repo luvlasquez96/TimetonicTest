@@ -1,7 +1,7 @@
-package com.example.timetonictest.remote.model.book
+package com.example.timetonictest.bookList.remote.model.book
 
 data class BooksResponse(
-    val allBooks: AllBooks,
+    val allBooksResponse: AllBooksResponse,
     val createdVNB: String,
     val req: String,
     val sstamp: Long,
