@@ -40,7 +40,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
             val oAuthKey = createOAuthKey.await()
             createSessionKey(oAuthKey.oauthkey, oAuthKey.oauthUser).onSuccess {
                 loginRepository.saveSessionKey(it.sesskey)
-                _viewState.value = ViewState.Loaded
+                _viewState.value = ViewState.Loaded(oAuthKey.oauthUser)
             }.onFailure {
                 _viewState.value = ViewState.Error(it.message.toString())
             }
@@ -67,7 +67,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
     sealed class ViewState {
         object Loading : ViewState()
         data class Error(val errorMessage: String) : ViewState()
-        object Loaded : ViewState()
+        data class Loaded (val user: String): ViewState()
     }
 
 

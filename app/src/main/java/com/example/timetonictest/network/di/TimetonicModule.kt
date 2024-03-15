@@ -1,5 +1,6 @@
 package com.example.timetonictest.network.di
 
+import com.example.timetonictest.bookList.data.dataAccess.BooksService
 import com.example.timetonictest.login.data.dataAccess.LoginService
 import dagger.Module
 import dagger.Provides
@@ -15,5 +16,11 @@ object TimetonicModule {
     @Singleton
     fun provideTimetonicService(retrofit: Retrofit): LoginService {
         return retrofit.create(LoginService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBookService(retrofit: Retrofit): BooksService {
+        return retrofit.create(BooksService::class.java)
     }
 }

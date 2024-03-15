@@ -3,30 +3,40 @@ package com.example.timetonictest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.timetonictest.navigation.graph.RootNavGraph
+import androidx.navigation.navArgument
+import com.example.timetonictest.bookList.presentation.composable.BookListScreen
+import com.example.timetonictest.login.LoginContent
+import com.example.timetonictest.navigation.Directions
 import com.example.timetonictest.ui.theme.TimetonicTestTheme
+import com.example.timetonictest.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             TimetonicTestTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = Directions.Login.route()
                 ) {
-                    navController = rememberNavController()
-                    RootNavGraph(navController = navController)
+                    composable(Directions.Login.route()) {
+                        LoginContent(navController = navController)
+                    }
+                    composable(Directions.Home.route(), arguments = listOf(
+                        navArgument(Constants.OAUTHUSER) { type = NavType.StringType }
+                    )
+                    ) {
+                        BookListScreen(
+                            oAuthUser = it.arguments?.getString(Constants.OAUTHUSER) ?: "",
+                        )
+                    }
                 }
             }
         }
