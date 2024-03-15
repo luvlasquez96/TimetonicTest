@@ -43,7 +43,7 @@ class LoginRepositoryTest {
     }
 
     @Test
-    fun `huh`() {
+    fun `Given createAppKey data WHEN createAppKey is called THEN retrun AppKey`() {
         runTest {
             coEvery {
                 loginRemoteDataSource.createAppKey()
