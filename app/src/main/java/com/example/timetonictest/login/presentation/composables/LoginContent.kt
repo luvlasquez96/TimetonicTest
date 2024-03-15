@@ -1,6 +1,8 @@
-package com.example.timetonictest.login
+package com.example.timetonictest.login.presentation.composables
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,17 +17,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,14 +39,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.timetonictest.R
 import com.example.timetonictest.login.presentation.LoginViewModel
 import com.example.timetonictest.login.presentation.components.DefaultTextField
 import com.example.timetonictest.navigation.Directions
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginContent(navController: NavHostController) {
@@ -54,17 +54,34 @@ fun LoginContent(navController: NavHostController) {
     val viewState by loginViewModel.viewState.collectAsState()
     val login = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val isLoading = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+
+    IndeterminateCircularIndicator(isLoading)
 
 
     LaunchedEffect(viewState) {
         when (viewState) {
+            is LoginViewModel.ViewState.Idle -> {}
+
             is LoginViewModel.ViewState.Loaded -> {
                 val user = (viewState as LoginViewModel.ViewState.Loaded).user
                 navController.navigate(Directions.Home.navigate(user))
-            }
-            is LoginViewModel.ViewState.Error -> {}
-            is LoginViewModel.ViewState.Loading -> {
+                isLoading.value = false
 
+            }
+
+            is LoginViewModel.ViewState.Error -> {
+                Toast.makeText(
+                    context,
+                    (viewState as LoginViewModel.ViewState.Error).errorMessage,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            is LoginViewModel.ViewState.Loading -> {
+                isLoading.value = true
             }
         }
     }
@@ -137,24 +154,29 @@ fun LoginContent(navController: NavHostController) {
                 )
             }
         }
-
     }
 }
 
 @Composable
-fun IndeterminateCircularIndicator() {
-    var loading by remember { mutableStateOf(false) }
-
-    Button(onClick = { loading = true }, enabled = !loading) {
-        Text("Start loading")
+fun IndeterminateCircularIndicator(loadingState: MutableState<Boolean>) {
+    if (loadingState.value) {
+        Dialog(
+            onDismissRequest = { loadingState.value = false },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(Color.White, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(48.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            }
+        }
     }
-
-    if (!loading) return
-
-    CircularProgressIndicator(
-        modifier = Modifier.width(64.dp),
-        color = MaterialTheme.colorScheme.secondary,
-    )
 }
 
 @Preview

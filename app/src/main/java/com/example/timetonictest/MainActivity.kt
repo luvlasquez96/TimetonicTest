@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.timetonictest.bookList.presentation.composable.BookListScreen
-import com.example.timetonictest.login.LoginContent
+import com.example.timetonictest.login.presentation.composables.LoginContent
 import com.example.timetonictest.navigation.Directions
 import com.example.timetonictest.ui.theme.TimetonicTestTheme
 import com.example.timetonictest.utils.Constants

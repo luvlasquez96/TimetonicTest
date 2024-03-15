@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class LoginViewModel @Inject constructor(private val loginRepository: LoginRepository) :
     ViewModel() {
 
-    private var _viewState = MutableStateFlow<ViewState>(ViewState.Loading)
+    private var _viewState = MutableStateFlow<ViewState>(ViewState.Idle)
     val viewState = _viewState.asStateFlow()
 
     private var _viewEvent = MutableSharedFlow<ViewEvent>(
@@ -30,20 +30,25 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
     val viewEvent: Flow<ViewEvent> = _viewEvent
 
     fun loginUser(login: String, password: String) {
-        val createAppKey = viewModelScope.async {
-            createAppKey().getOrThrow()
-        }
-        val createOAuthKey = viewModelScope.async {
-            createOAuthKey(login, password, createAppKey.await().appkey).getOrThrow()
-        }
-        viewModelScope.launch {
-            val oAuthKey = createOAuthKey.await()
-            createSessionKey(oAuthKey.oauthkey, oAuthKey.oauthUser).onSuccess {
-                loginRepository.saveSessionKey(it.sesskey)
-                _viewState.value = ViewState.Loaded(oAuthKey.oauthUser)
-            }.onFailure {
-                _viewState.value = ViewState.Error(it.message.toString())
+        if(login.isNotEmpty() || password.isNotEmpty()) {
+            _viewState.value = ViewState.Loading
+            val createAppKey = viewModelScope.async {
+                createAppKey().getOrThrow()
             }
+            val createOAuthKey = viewModelScope.async {
+                createOAuthKey(login, password, createAppKey.await().appkey).getOrThrow()
+            }
+            viewModelScope.launch {
+                val oAuthKey = createOAuthKey.await()
+                createSessionKey(oAuthKey.oauthkey, oAuthKey.oauthUser).onSuccess {
+                    loginRepository.saveSessionKey(it.sesskey)
+                    _viewState.value = ViewState.Loaded(oAuthKey.oauthUser)
+                }.onFailure {
+                    _viewState.value = ViewState.Error(it.message.toString())
+                }
+            }
+        } else{
+            _viewState.value = ViewState.Error("Empty login or password")
         }
     }
 
@@ -65,6 +70,7 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
 
 
     sealed class ViewState {
+        object Idle : ViewState()
         object Loading : ViewState()
         data class Error(val errorMessage: String) : ViewState()
         data class Loaded (val user: String): ViewState()
