@@ -22,11 +22,11 @@ class BooksViewModel @Inject constructor(
     val viewState = _viewState.asStateFlow()
 
 
-    fun getBooks(oAuthKey: String, user: String) {
+    fun getBooks(oAuthUser: String, user: String) {
         viewModelScope.launch {
             val sessionKey = loginRepository.getSessionKey()
             if (sessionKey.isNotEmpty()) {
-                booksRepository.getBooks(oAuthKey = oAuthKey, user = user, sessionKey = sessionKey)
+                booksRepository.getBooks(oAuthUser = oAuthUser, user = user, sessionKey = sessionKey)
                     .onSuccess { bookList ->
                         _viewState.value = ViewState.Loaded(bookList)
                     }.onFailure { throwable ->

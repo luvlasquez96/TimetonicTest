@@ -1,7 +1,9 @@
 package com.example.timetonictest.bookList.remote.model.book
 
-data class BooksResponse(
-    val allBooksResponse: AllBooksResponse,
+import com.google.gson.annotations.SerializedName
+
+data class GetAllBooksResponse(
+    @SerializedName("allBooks")val allBooksResponse: AllBooksResponse,
     val createdVNB: String,
     val req: String,
     val sstamp: Long,

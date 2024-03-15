@@ -1,9 +1,10 @@
-package com.example.timetonictest.bookList
+package com.example.timetonictest.bookList.presentation.composable
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import com.example.timetonictest.bookList.presentation.composable.BookListContent
 
 @Composable
-fun BookListScreen(navController: NavHostController) {
-    BookListContent(navController)
+fun BookListScreen(oAuthUser: String) {
+    BookListContent(oAuthUser = oAuthUser)
 }
